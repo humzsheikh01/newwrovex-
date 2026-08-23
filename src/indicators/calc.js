@@ -1,0 +1,4 @@
+export const ema=(bars,n)=>bars.map((b,i)=>({time:b.time,value:i?b.close*(2/(n+1))+bars.slice(0,i).reduce((a,x,j)=>a+x.close*Math.pow(1-2/(n+1),i-j-1),0)*(2/(n+1)):b.close}));
+export const bb=(bars,n=20)=>bars.map((b,i)=>{const x=bars.slice(Math.max(0,i-n+1),i+1).map(z=>z.close),m=x.reduce((a,v)=>a+v,0)/x.length,s=Math.sqrt(x.reduce((a,v)=>a+(v-m)**2,0)/x.length);return {time:b.time,upper:m+2*s,lower:m-2*s}});
+export function vwap(bars){let pv=0,v=0;return bars.map(b=>{pv+=((b.high+b.low+b.close)/3)*b.volume;v+=b.volume;return {time:b.time,value:pv/v}})}
+export function rsi(bars,n=14){return bars.map((b,i)=>{const x=bars.slice(Math.max(1,i-n+1),i+1);let g=0,l=0;x.forEach((z,j)=>{const d=z.close-bars[Math.max(0,i-x.length+j+1)].close;g+=Math.max(0,d);l+=Math.max(0,-d)});return {time:b.time,value:l?100-100/(1+g/l):100}})}
